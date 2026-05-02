@@ -36,4 +36,16 @@ const mostBlogs=(blogs) => {
     return authorMostBlogs
 }
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+
+const mostLikes =(blogs) => {
+
+    const groupedByAuthor = lodash.groupBy(blogs, 'author')
+    const likesCountByAuthor = Object.entries(groupedByAuthor).map(([author, likes]) => ({
+        author,
+        likes : likes.reduce((sum, blog) => sum + blog.likes, 0)
+    }))
+
+    return likesCountByAuthor
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }

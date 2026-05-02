@@ -6,6 +6,7 @@ const assert =require('node:assert')
 const totalLikes = require('../utils/list_helper').totalLikes
 const favoriteBlog = require("../utils/list_helper").favoriteBlog
 const mostBlogs =require('../utils/list_helper').mostBlogs
+const mostLikes = require('../utils/list_helper').mostLikes
 
 describe('total likes', () => {
     test('with empty blogs should be 0', () => {
@@ -76,6 +77,44 @@ describe('most blogs wrote', () => {
             "blogs": 3
         })
     })
+
+})
+
+describe('most likes author with', () => {
+
+    test('empty blog',() => {
+        const result = mostLikes(emptyBlogs)
+        assert.deepStrictEqual(result,[])
+    })
+
+    test('list only one blog',() => {
+        const result = mostLikes(listWithOneBlog)
+        assert.deepStrictEqual(result,[{
+            "author": "Edsger W. Dijkstra",
+            "likes": 5,
+        }])
+    })
+
+    test('a list of blogs', () => {
+        const result = mostLikes(blogs)
+        assert.deepStrictEqual(result, [
+            {
+                "author": "Edsger W. Dijkstra",
+                "likes": 22
+            },
+            {
+                "author": "Michael Chan",
+                "likes": 7
+            },
+            {
+                "author": "Robert C. Martin",
+                "likes": 12
+            }
+        ])
+    })
+
+
+
 
 })
 
