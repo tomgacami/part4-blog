@@ -1,20 +1,22 @@
 
 const { test, describe } = require('node:test')
 const assert =require('node:assert')
-const { favoriteBlog } = require("../utils/list_helper");
+
 
 const totalLikes = require('../utils/list_helper').totalLikes
+const favoriteBlog = require("../utils/list_helper").favoriteBlog
+const mostBlogs =require('../utils/list_helper').mostBlogs
 
 describe('total likes', () => {
     test('with empty blogs should be 0', () => {
-        assert.strictEqual(totalLikes(enmpyBlogs),0)
+        assert.strictEqual(totalLikes(emptyBlogs),0)
     })
 
     test('with only one blog', () => {
         assert.strictEqual(totalLikes(listWithOneBlog),5)
     })
 
-    test ('when list has only one blog, equals the likes of that', () => {
+    test ('when list of blogs', () => {
         const result = totalLikes(blogs)
         assert.strictEqual(result, 41)
     })
@@ -22,13 +24,13 @@ describe('total likes', () => {
 
 })
 
-describe ('blog', () => {
+describe ('blog with more likes', () => {
 
-    test('with empty blogs should be 0', () => {
-        assert.deepStrictEqual(favoriteBlog(enmpyBlogs),{ likes:0 })
+    test('with empty blogs', () => {
+        assert.deepStrictEqual(favoriteBlog(emptyBlogs),{ likes:0 })
     })
 
-    test('with only one blog', () => {
+    test('and only one blog', () => {
         assert.deepStrictEqual(favoriteBlog(listWithOneBlog),{
             _id: '5a422aa71b54a676234d17f8',
             title: 'Go To Statement Considered Harmful',
@@ -39,7 +41,7 @@ describe ('blog', () => {
         })
     })
 
-    test('with more likes',() => {
+    test('with more likes in a list of blogs',() => {
         const result = favoriteBlog(blogs)
          assert.deepStrictEqual(result, {
             _id: "5a422b3a1b54a676234d17f9",
@@ -52,7 +54,32 @@ describe ('blog', () => {
     })
 })
 
-const enmpyBlogs = []
+describe('most blogs wrote', () => {
+
+    test('with empty blogs',() => {
+        const result = mostBlogs(emptyBlogs)
+        assert.strictEqual(result, 0)
+    })
+
+    test('with only one blog',() => {
+        const result = mostBlogs(listWithOneBlog)
+        assert.deepStrictEqual(result, {
+            "author": "Edsger W. Dijkstra",
+            "blogs": 1
+        })
+    })
+
+    test('with a list of blogs',() => {
+        const result = mostBlogs(blogs)
+        assert.deepStrictEqual(result, {
+            "author": "Edsger W. Dijkstra",
+            "blogs": 3
+        })
+    })
+
+})
+
+const emptyBlogs = []
 
 const listWithOneBlog = [
     {
