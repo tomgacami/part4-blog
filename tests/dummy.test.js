@@ -3,7 +3,7 @@ const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const dummy = require('../utils/list_helper').dummy
 
-describe('dummy',() => {
+describe('dummy', () => {
 
     test('dummy returns 1', () => {
         const blogs = []

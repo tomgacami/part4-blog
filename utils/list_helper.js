@@ -5,16 +5,16 @@ const dummy = (blogs) => {
     return 1
 }
 
-const totalLikes =(blogs ) => {
+const totalLikes = (blogs ) => {
 
     return blogs.reduce(
             (sum,  blog ) =>
-                sum + blog.likes  ,0)
+                sum + blog.likes, 0)
 }
 
 const favoriteBlog = (blogs) => {
 
-    let maxLikes = { likes:0 }
+    let maxLikes = { likes: 0 }
     blogs.forEach(blog => {
         if( blog.likes > maxLikes.likes ) {
             maxLikes = blog
@@ -23,7 +23,7 @@ const favoriteBlog = (blogs) => {
     return maxLikes
 }
 
-const mostBlogs=(blogs) => {
+const mostBlogs = (blogs) => {
 
     if (blogs.length === 0){
         return 0
@@ -37,12 +37,12 @@ const mostBlogs=(blogs) => {
 }
 
 
-const mostLikes =(blogs) => {
+const mostLikes = (blogs) => {
 
     const groupedByAuthor = lodash.groupBy(blogs, 'author')
     const likesCountByAuthor = Object.entries(groupedByAuthor).map(([author, likes]) => ({
         author,
-        likes : likes.reduce((sum, blog) => sum + blog.likes, 0)
+        likes: likes.reduce((sum, blog) => sum + blog.likes, 0)
     }))
 
     return likesCountByAuthor
