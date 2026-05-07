@@ -13,19 +13,19 @@ describe('testign blogs API', () => {
 
     test('GET /api/blogs JSON format ', async  () => {
         await api
-            .get('/bloglist/api/blogs')
+            .get('/api/blogs')
             .expect(200)
             .expect('Content-Type', /application\/json/)
     })
 
     test('return correct number blogs', async () => {
 
-        const response = await api.get('/bloglist/api/blogs')
+        const response = await api.get('/api/blogs')
         assert.strictEqual(response.body.length, 2)
     })
 
     test('blog _id field changed to id', async() => {
-        const response = await api.get('/bloglist/api/blogs')
+        const response = await api.get('/api/blogs')
         const blogs = response.body
 
         blogs.forEach(blog => {
