@@ -28,7 +28,6 @@ describe('testign blogs API', () => {
         const response = await api.get('/bloglist/api/blogs')
         const blogs = response.body
 
-        console.log('Blogs: ',  blogs)
         blogs.forEach(blog => {
             assert.ok(blog.id)
             assert.ok('id' in blog)
