@@ -35,6 +35,33 @@ describe('testign blogs API', () => {
         })
     })
 
+    test('Add blog to DB', async() => {
+
+        const responseBefore = await api.get('/api/blogs')
+        const blogsBeforePOST = responseBefore.body
+
+        assert.strictEqual(blogsBeforePOST.length, 2)
+
+        const newBlog = {
+            title: 'This is a new blog in the DB',
+            author: 'From a JR developer',
+            url: 'www.thisIsALink.com',
+            likes: 0
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+
+        const responseAfter = await api.get('/api/blogs')
+        const blogsAfterPOST = responseAfter.body
+        assert.strictEqual(blogsAfterPOST.length, 3)
+
+        const content = blogsAfterPOST.map(blog => blog.title)
+        assert(content.includes('This is a new blog in the DB'))
+    })
+
 })
 
 
