@@ -22,8 +22,20 @@ describe('testign blogs API', () => {
 
         const response = await api.get('/bloglist/api/blogs')
         assert.strictEqual(response.body.length, 2)
-
     })
+
+    test('blog _id field changed to id', async() => {
+        const response = await api.get('/bloglist/api/blogs')
+        const blogs = response.body
+
+        console.log('Blogs: ',  blogs)
+        blogs.forEach(blog => {
+            assert.ok(blog.id)
+            assert.ok('id' in blog)
+            assert.strictEqual(blog._id, undefined)
+        })
+    })
+
 })
 
 
