@@ -14,6 +14,7 @@ blogsRouter.post('/', async(request, response) => {
     const body = request.body
 
     if (!body.title || !body.author || !body.url ){
+        //ALREADY DONE IN THE NEXT LINE
         return response.status(400).json({ error: 'All fields must be fulled' })
     }
 
