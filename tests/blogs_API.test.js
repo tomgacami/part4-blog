@@ -62,6 +62,25 @@ describe('testign blogs API', () => {
         assert(content.includes('This is a new blog in the DB'))
     })
 
+    test('Property likes not sended', async() => {
+
+        const newBlog = {
+            title: 'Without send likes property',
+            author: 'Someone',
+            url: 'www.bloglist.com'
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(201)
+
+        const response = await api.get('/api/blogs')
+        const body = response.body
+        const blog = body.find(blog => blog.title === 'Without send likes property')
+        assert.strictEqual(blog.likes, 0)
+    })
+
 })
 
 
