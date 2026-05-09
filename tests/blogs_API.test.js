@@ -102,6 +102,32 @@ describe('testign blogs API', () => {
         assert.strictEqual(blogsAfterDelete.length, blogsCount - 1)
     })
 
+    test('Update an unexisting blog', async() => {
+
+        const invalidId = '69fe3fce8161efc56904bf83'
+        // await api.put
+        await api.put(`/api/blogs/${invalidId}`)
+            .expect(404)
+    })
+
+    test('Update blog adding like', async () => {
+
+        const response = await api.get('/api/blogs')
+        const blogs = response.body
+
+        const validId = blogs[0].id
+        const preLikesUpdate = blogs[0].likes
+
+
+        await api.put(`/api/blogs/${validId}`)
+
+        const responseAfterUpdate = await api.get('/api/blogs')
+        const blogsAfterUpdate = responseAfterUpdate.body
+
+        assert.strictEqual(preLikesUpdate + 1, blogsAfterUpdate[0].likes )
+
+    })
+
 })
 
 
