@@ -105,9 +105,15 @@ describe('testign blogs API', () => {
     test('Update an unexisting blog', async() => {
 
         const invalidId = '69fe3fce8161efc56904bf83'
-        // await api.put
         await api.put(`/api/blogs/${invalidId}`)
             .expect(404)
+    })
+
+    test('Update with invalid Id', async() => {
+
+        const invalidId = 'abc123'
+        await api.put(`/api/blogs/${invalidId}`)
+            .expect(400)
     })
 
     test('Update blog adding like', async () => {
