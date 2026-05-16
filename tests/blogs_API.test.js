@@ -1,15 +1,28 @@
 
 
-const { test, describe, after } = require('node:test')
+const { test, describe, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const assert = require('node:assert')
 const api = supertest(app)
+const helper = require('../tests/test_helper')
 
 const Blog = require('../models/blog')
 
-describe('testign blogs API', () => {
+
+
+describe('testing blogs API', () => {
+
+    beforeEach(async() => {
+        await Blog.deleteMany({})
+
+        const blogs = helper.initialBlogs.map(blog => new Blog(blog))
+
+        const promiseArray = blogs.map(blog => blog.save())
+        await Promise.all(promiseArray)
+
+    })
 
     test('GET /api/blogs JSON format ', async  () => {
         await api
@@ -21,7 +34,7 @@ describe('testign blogs API', () => {
     test('return correct number blogs', async () => {
 
         const response = await api.get('/api/blogs')
-        assert.strictEqual(response.body.length, 2)
+        assert.strictEqual(response.body.length, helper.initialBlogs.length)
     })
 
     test('blog _id field changed to id', async() => {
@@ -40,7 +53,7 @@ describe('testign blogs API', () => {
         const responseBefore = await api.get('/api/blogs')
         const blogsBeforePOST = responseBefore.body
 
-        assert.strictEqual(blogsBeforePOST.length, 2)
+        assert.strictEqual(blogsBeforePOST.length, helper.initialBlogs.length)
 
         const newBlog = {
             title: 'This is a new blog in the DB',
@@ -56,7 +69,7 @@ describe('testign blogs API', () => {
 
         const responseAfter = await api.get('/api/blogs')
         const blogsAfterPOST = responseAfter.body
-        assert.strictEqual(blogsAfterPOST.length, 3)
+        assert.strictEqual(blogsAfterPOST.length, helper.initialBlogs.length + 1)
 
         const content = blogsAfterPOST.map(blog => blog.title)
         assert(content.includes('This is a new blog in the DB'))

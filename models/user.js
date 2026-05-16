@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        minLength: [4, 'Username must be at least 4 characters'],
+        minLength: [3, 'Username must be at least 3 characters'],
         match: [
             /^[a-zA-Z0-9._-]+$/,
             'Username is not valid. Only letters, numbers and symbols are allowed "-", "_", "."'
@@ -20,7 +20,11 @@ const userSchema = new mongoose.Schema({
             'Name is not valid, Only letters and symbols are allowed "-", ".".'
         ]
     },
-    passwordHash: String,
+    passwordHash: {
+        type: String,
+        required: true,
+        minlength: [3, 'Password must have at least 3 characters']
+    },
 
     blogs: [{
         type: mongoose.Schema.Types.ObjectId,
