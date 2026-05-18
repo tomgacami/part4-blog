@@ -50,9 +50,9 @@ blogsRouter.delete('/:id', async (request, response) => {
         return response.status(404).json({ message: 'Blog not found' })
     }
 
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    const user = request.user
 
-    if(!decodedToken.id || decodedToken.id !== blog.user.toString()){
+    if(!user || user.id !== blog.user.toString()){
         return response.status(403).json({ error: 'Only creator can delete this blog' })
     }
 
