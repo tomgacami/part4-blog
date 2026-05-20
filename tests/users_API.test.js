@@ -1,6 +1,6 @@
 
 
-const { test, describe, after } = require('node:test')
+const { test, describe, after, beforeEach } = require('node:test')
 const mongoose = require('mongoose')
 const assert = require('node:assert')
 const supertest = require('supertest')
@@ -9,6 +9,7 @@ const api = supertest(app)
 const User = require('../models/user')
 const bcrypt = require('bcrypt')
 const helper = require('../tests/test_helper')
+const Blog = require("../models/blog");
 
 
 // beforeEach( async () => {
@@ -24,12 +25,36 @@ const helper = require('../tests/test_helper')
 //     await user.save()
 // })
 
+beforeEach(async() => {
+    await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({
+        username: `${helper.testUser.username}`,
+        passwordHash,
+        name: `${helper.testUser.name}`
+    })
+
+    const savedUser = await user.save()
+
+    // const user = await User.findOne({ username: helper.testUser.username })
+
+    const blogsDefault = await helper.initialBlogs.map(blog => ({ ...blog, user: savedUser.id.toString() }))
+
+    const blogsToSave = blogsDefault.map(blog => new Blog(blog))
+
+    const promiseArray = blogsToSave.map(blog => blog.save())
+    await Promise.all(promiseArray)
+
+})
+
 
 describe('POST /api/blogs', async () => {
 
     test('try to create user with no username', async () => {
 
-        const usersAtStart = helper.usersInDb()
+        const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: '',
@@ -43,7 +68,7 @@ describe('POST /api/blogs', async () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
 
-        const usersAtEnd = helper.usersInDb()
+        const usersAtEnd = await helper.usersInDb()
 
         assert(result.body.error.includes(`\`username\` is required`))
         assert.strictEqual(usersAtStart.length, usersAtEnd.length)
@@ -51,7 +76,7 @@ describe('POST /api/blogs', async () => {
 
     test('try to create user with no password', async () => {
 
-        const usersAtStart = helper.usersInDb()
+        const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'Mikelins',
@@ -64,7 +89,7 @@ describe('POST /api/blogs', async () => {
             .send(newUser)
             .expect(400)
 
-        const usersAtEnd = helper.usersInDb()
+        const usersAtEnd = await helper.usersInDb()
 
         assert(result.body.error.includes('Password must be at least 3 characters'))
         assert.strictEqual(usersAtStart.length, usersAtEnd.length)
@@ -72,7 +97,7 @@ describe('POST /api/blogs', async () => {
     })
 
     test('try to create user with username less then 3 characters', async () => {
-        const usersAtStart = helper.usersInDb()
+        const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'AL',
@@ -86,14 +111,14 @@ describe('POST /api/blogs', async () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
 
-        const usersAtEnd = helper.usersInDb()
+        const usersAtEnd = await helper.usersInDb()
 
         assert(result.body.error.includes('Username must be at least 3 characters'))
         assert.strictEqual(usersAtStart.length, usersAtEnd.length)
     })
 
     test('try to create user with password less then 3 characters', async () => {
-        const usersAtStart = helper.usersInDb()
+        const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'Mikelins',
@@ -106,7 +131,7 @@ describe('POST /api/blogs', async () => {
             .send(newUser)
             .expect(400)
 
-        const usersAtEnd = helper.usersInDb()
+        const usersAtEnd = await helper.usersInDb()
 
         assert(result.body.error.includes('Password must be at least 3 characters'))
         assert.strictEqual(usersAtStart.length, usersAtEnd.length)
@@ -124,7 +149,7 @@ describe('POST /api/blogs', async () => {
         })
         await user.save()
 
-        const usersAtStart = helper.usersInDb()
+        const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'rooter',
@@ -138,7 +163,7 @@ describe('POST /api/blogs', async () => {
             .expect(400)
             .expect('Content-Type', /application\/json/)
 
-        const usersAtEnd = helper.usersInDb()
+        const usersAtEnd = await helper.usersInDb()
 
         assert(result.body.error.includes(`expected 'username' to be unique`))
         assert.strictEqual(usersAtStart.length, usersAtEnd.length)
